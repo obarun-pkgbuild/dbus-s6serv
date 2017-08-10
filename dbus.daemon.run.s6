@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if ! [ -d /run/dbus ]; then
+  mkdir -p -m 0755 /run/dbus
+fi
+exec 2>&1
+/usr/bin/dbus-uuidgen --ensure
+exec dbus-daemon --nofork --nopidfile --config-file=/usr/share/dbus-1/system.conf
