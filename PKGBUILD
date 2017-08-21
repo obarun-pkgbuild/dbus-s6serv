@@ -2,7 +2,7 @@
 
 pkgname=dbus-s6serv
 pkgver=0.1
-pkgrel=5
+pkgrel=6
 pkgdesc="dbus service for s6"
 arch=(x86_64)
 license=('beerware')
@@ -27,7 +27,7 @@ package() {
 	
 	# log
 	install -Dm 0755 "$srcdir/dbus.log.run.s6" "$pkgdir/etc/s6-serv/available/classic/dbus/log/run"
-	install -Dm 0644 "$srcdir/dbus.logd" "$pkgdir/etc/s6-serv/log.d/serv/dbus"
+	install -Dm 0644 "$srcdir/dbus.logd" "$pkgdir/etc/s6-serv/log.d/dbus"
 	
 	install -Dm 0755 "$srcdir/LICENSE" "$pkgdir/usr/share/licenses/dbus-s6serv/LICENSE"
 }
