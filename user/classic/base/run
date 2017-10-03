@@ -1,0 +1,8 @@
+#!@BINDIR_EXECLINE@/execlineb -P
+fdmove -c 2 1
+importas -i XDG_RUNTIME_DIR XDG_RUNTIME_DIR
+s6-ipcserver-socketbinder ${XDG_RUNTIME_DIR}/bus
+export DBUS_SESSION_BUS_ADDRESS unix:path=${XDG_RUNTIME_DIR}/bus
+importas -i DBUS_SESSION_BUS_ADDRESS DBUS_SESSION_BUS_ADDRESS
+foreground { exec bash -c "if [[ -n $(pgrep dbus-launch) ]]; then kill $(pgrep dbus-launch);fi" } 
+exec dbus-daemon --nofork --nopidfile --session --print-address --address=${DBUS_SESSION_BUS_ADDRESS}

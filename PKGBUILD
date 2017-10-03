@@ -1,33 +1,42 @@
 # Maintainer: Eric Vidal <eric@obarun.org>
 
-pkgname=dbus-s6serv
-pkgver=0.1
-pkgrel=6
-pkgdesc="dbus service for s6"
+pkgbase=dbus
+_depends=dbus
+pkgname="${pkgbase}"-s6serv
+pkgver=0.2
+pkgrel=1
+pkgdesc="${pkgbase} service for s6"
 arch=(x86_64)
-license=('beerware')
-depends=('dbus' 's6' 's6-rc' 's6-boot')
+license=('ISC')
+depends=("${_depends}" 's6' 's6-boot' 's6opts')
+makedepends=('util-linux' 'findutils')
 conflicts=()
-source=('dbus.daemon.finish.s6'
-		'dbus.daemon.run.s6'
-		'dbus.log.run.s6'
-		'dbus.logd'
-		'LICENSE')
-md5sums=('0963f8a3678d1e6d509e2ef38f5ecfa3'
-         '874be4284f7c5dc07b1641c331fa2e9d'
-         'cb00245c0890acb120900c9d32a3955e'
-         '64e305bd0dd8d1008abfcd67b9817651'
-         '191a37ae657aa17e37e75d0242865dba')
+source=("$pkgname::git+https://github.com/obarun-pkgbuild/${pkgname}#branch=master")
+md5sums=('SKIP')
+validpgpkeys=('6DD4217456569BA711566AC7F06E8FDE7B45DAAC') # Eric Vidal
 
-package() {
+prepare(){
+	cd "${pkgname}"
 	
-	# daemon
-	install -Dm 0755 "$srcdir/dbus.daemon.finish.s6" "$pkgdir/etc/s6-serv/available/classic/dbus/finish"
-	install -Dm 0755 "$srcdir/dbus.daemon.run.s6" "$pkgdir/etc/s6-serv/available/classic/dbus/run"
+	sed -i "s:base:${pkgbase}:g" Makefile
 	
-	# log
-	install -Dm 0755 "$srcdir/dbus.log.run.s6" "$pkgdir/etc/s6-serv/available/classic/dbus/log/run"
-	install -Dm 0644 "$srcdir/dbus.logd" "$pkgdir/etc/s6-serv/log.d/dbus"
+	if [[ -d base ]]; then
+		find -type d -name 'base' | rename base "${pkgbase}" * 
+		for i in */log/logd */log/run; do
+			sed -i "s:base:${pkgbase}:g" $i 
+		done
+	fi
+	# user
+	if [[ -d user ]]; then
+		find user/classic -type d -name 'base' | rename base "${pkgbase}" user/classic/*
+		for i in user/classic/*/log/logd user/classic/*/log/run; do
+			sed -i "s:base:${pkgbase}:g" $i 
+		done
+	fi
+}
+package(){
+	cd "${pkgname}"
 	
-	install -Dm 0755 "$srcdir/LICENSE" "$pkgdir/usr/share/licenses/dbus-s6serv/LICENSE"
+	make DESTDIR="$pkgdir" install
+	
 }

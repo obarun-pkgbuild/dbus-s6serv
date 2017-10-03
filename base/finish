@@ -1,0 +1,5 @@
+#!@BINDIR_EXECLINE@/execlineb -P
+fdmove -c 2 1
+if { s6-rmrf /run/dbus/system_bus_socket }
+s6-rmrf  /run/dbus.pid
+

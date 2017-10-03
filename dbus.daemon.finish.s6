@@ -1,3 +1,0 @@
-#!/bin/bash
-rm -rf /run/dbus/system_bus_socket /run/dbus.pid
-

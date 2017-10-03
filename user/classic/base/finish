@@ -1,0 +1,4 @@
+#!@BINDIR_EXECLINE@/execlineb -P
+fdmove -c 2 1
+importas -i XDG_RUNTIME_DIR XDG_RUNTIME_DIR
+s6-rmrf ${XDG_RUNTIME_DIR}/bus
